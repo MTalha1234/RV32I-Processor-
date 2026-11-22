@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rv32i:
+    name: RV32I simulation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog gtkwave bsdextrautils build-essential
+          sudo apt-get install -y gcc-riscv64-unknown-elf binutils-riscv64-unknown-elf \
+            || echo "WARNING: bare-metal RISC-V toolchain package unavailable"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install Python dependencies
+        run: uv sync
+
+      - name: Build test programs
+        run: |
+          make build-asm
+          make build-gcc
+          make rom.mem
+
+      - name: Encoder cross-check (37 instructions vs GNU as)
+        run: uv run python tests/demo/check_encoder.py
+
+      - name: Cocotb regression
+        run: |
+          cd tests/cocotb
+          WAVES=1 WISHBONE_TEST=1 ASM_TEST=1 GCC_TEST=1 uv run run_tests.py
+
+      - name: Lockstep differential demo (all 37 instructions)
+        run: |
+          cd tests/demo
+          uv run python run_demo.py
+
+      - name: Upload waveforms
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: waveforms
+          if-no-files-found: ignore
+          path: |
+            tests/cocotb/waves/*.fst
+            tests/demo/sim_build/*.fst
+
+  lint:
+    name: Verible lint
+    runs-on: ubuntu-latest
+    continue-on-error: true  # the repository still has known style findings
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Verible
+        run: |
+          set -euo pipefail
+          URL=$(curl -fsSL https://api.github.com/repos/chipsalliance/verible/releases/latest \
+                | jq -r '.assets[].browser_download_url' \
+                | grep 'linux-static-x86_64.tar.gz$' | head -1)
+          curl -sSL "$URL" | tar -xz -C /opt
+          echo "/opt/verible/bin" >> "$GITHUB_PATH"
+
+      - name: Lint
+        run: |
+          # NOTE: this Verible version expects `length:180`, the repository
+          # config still uses the older `line-length=180` spelling.
+          verible-verilog-lint --rules_config_search \
+            --rules=-always-comb,line-length=length:180 $(cat verible.filelist)

@@ -9,6 +9,5 @@ dependencies = [
     "cocotb-test>=0.2.6",
     "debugpy>=1.8.21",
     "pytest>=9.1.1",
-    "riscv-assembler>=1.2.1",
     "tinyrv>=0.1.0",
 ]

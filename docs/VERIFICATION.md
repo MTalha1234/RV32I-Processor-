@@ -296,9 +296,12 @@ The GNU assembler (`riscv64-unknown-elf-as`) is unaffected and encodes `srai`
 correctly — which is why the demo program in `tests/demo/` exercises the real
 `srai` encoding and caught the RTL bug.
 
-**Note for future work:** `riscv-assembler` is pinned as `>=1.2.1` in
-`pyproject.toml`. Until upstream fixes it, any test that relies on the
-`srai` mnemonic must use a literal encoding.
+**Note for future work:** `riscv-assembler` was pinned as `>=1.2.1` in
+`pyproject.toml` and has been **removed**. The ISA test now uses a small local
+encoder (`tests/cocotb/asm.py`) whose output is cross-checked against the GNU
+assembler for all 37 instructions by `tests/demo/check_encoder.py`, which runs
+as part of the demo and in CI. The dependency is no longer installed, so the
+bug cannot be reached by accident again.
 
 ---
 

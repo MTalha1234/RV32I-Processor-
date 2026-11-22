@@ -1,16 +1,18 @@
 import cocotb
 from cocotb.triggers import Timer, ReadWrite
 from util import setup_clock, sign_extend, set_inst, inst_nop, assert_mem, assert_reg
-from riscv_assembler.convert import AssemblyConverter
-
-asm = AssemblyConverter(hex_mode=True)
+from asm import encode
 
 
 def asm_inst(inst: list[str]):
-    assembled = asm(str.join("\n", inst))
-    if assembled is None:
-        raise ValueError(f"Invalid instruction: {inst}")
-    return [int(x, 16) for x in assembled]
+    """Encode instruction text into 32-bit words.
+
+    Uses the local encoder (tests/cocotb/asm.py) instead of the
+    `riscv_assembler` package, which mis-encodes `srai` as an `srli` and does
+    not support `srli` at all. The encoder is cross-checked against the GNU
+    assembler by tests/demo/check_encoder.py.
+    """
+    return [encode(line) for line in inst]
 
 
 async def reset_state(dut):

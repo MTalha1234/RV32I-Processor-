@@ -13,6 +13,8 @@ import subprocess
 
 from cocotb_tools.runner import get_runner
 
+import check_encoder
+
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 BUILD = HERE / "build"
@@ -75,6 +77,11 @@ def build_program():
 
 
 def main():
+    # the test-side encoder must agree with the GNU assembler for every
+    # instruction the tests use (guards against silent mis-encoding)
+    if check_encoder.main() != 0:
+        raise SystemExit("encoder cross-check failed")
+
     mem = build_program()
 
     sources = sorted(str(path) for path in (ROOT / "rtl" / "riscv").glob("*.v"))

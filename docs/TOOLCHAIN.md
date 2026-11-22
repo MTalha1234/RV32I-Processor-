@@ -76,7 +76,7 @@ This is the shortest path. The runner is hard-coded to **Icarus Verilog**
 | **cocotb** | 2.0.1 | Python testbench / coroutine driver |
 | **cocotb-test** | 0.2.6 | Pytest integration |
 | **pytest** | 9.1.1 | Test runner |
-| **riscv-assembler** | 1.2.1 | Assembles instruction strings in the ISA test |
+| **RV32I encoder (local)** | `tests/cocotb/asm.py` | Encodes instruction strings in the ISA test; cross-checked against GNU `as` |
 | **tinyrv** | 0.1.0 | Reference RV32I ISS used by the hex-file tests |
 | **GTKWave** or **Surfer** | any recent | View `.fst` waveforms from `tests/cocotb/waves/` |
 | *Optional:* **Verilator** | 5.x | Faster lint/alt simulation |
