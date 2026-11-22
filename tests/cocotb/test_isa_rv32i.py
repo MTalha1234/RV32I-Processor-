@@ -131,8 +131,18 @@ async def test_alu_imm_inst(dut):
     await exec_imm(dut, 0x0052D213)  # srli x4, x5, 5
     assert_reg(dut, 4, x5 >> 5)
 
-    await exec_imm(dut, "srai x4, x5, 5")
+    # NOTE: riscv_assembler 1.2.1 mis-encodes "srai" (emits funct7=0, i.e. an
+    # srli) and does not support "srli" at all, so the encodings are explicit.
+    await exec_imm(dut, 0x40545213)  # srai x4, x5, 5
     assert_reg(dut, 4, x5 >> 5)
+
+    # arithmetic vs logical shift on a negative operand.
+    # Regression: srai must sign-extend (it used to behave like srli).
+    await exec_imm(dut, "addi x6, x0, -16")
+    await exec_imm(dut, 0x40235213)  # srai x4, x6, 2
+    assert_reg(dut, 4, -4, "srai must be an arithmetic shift")
+    await exec_imm(dut, 0x00235213)  # srli x4, x6, 2
+    assert_reg(dut, 4, 0x3FFF_FFFC, "srli must be a logical shift")
 
 
 @cocotb.test()
@@ -170,6 +180,14 @@ async def test_alu_inst(dut):
 
     await exec_imm(dut, "sra x4, x5, x6")
     assert_reg(dut, 4, x5 >> x6)
+
+    # arithmetic vs logical shift on a negative operand.
+    # Regression: sra must sign-extend (it used to behave like srl).
+    await exec_imm(dut, "addi x7, x0, -16")
+    await exec_imm(dut, "sra x4, x7, x6")
+    assert_reg(dut, 4, -2, "sra must be an arithmetic shift")
+    await exec_imm(dut, "srl x4, x7, x6")
+    assert_reg(dut, 4, 0x1FFF_FFFE, "srl must be a logical shift")
 
     await exec_imm(dut, "or x4, x5, x6")
     assert_reg(dut, 4, x5 | x6)

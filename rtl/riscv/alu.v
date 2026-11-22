@@ -21,7 +21,7 @@ module alu (
             `ALU_OP_SLTU: result <= (A < B) ? 1'b1 : 32'b0;
             `ALU_OP_SLL: result <= A << B;
             `ALU_OP_SRL: result <= A >> B;
-            `ALU_OP_SRA: result <= A >>> B;
+            `ALU_OP_SRA: result <= $signed(A) >>> B;
             default: result <= 0;
         endcase
     end

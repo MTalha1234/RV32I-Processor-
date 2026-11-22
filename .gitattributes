@@ -1,0 +1,38 @@
+# Normalize line endings in the repository.
+#
+# `core.autocrlf=true` on Windows checks these files out with CRLF, which
+# breaks Linux tooling (bash, make, yosys) when the project is built inside
+# WSL. Keep everything LF in the working tree, on every platform.
+
+* text=auto eol=lf
+
+# files that are executed or parsed by Linux tools
+*.sh       text eol=lf
+Makefile   text eol=lf
+*.mk       text eol=lf
+*.ys       text eol=lf
+*.filelist text eol=lf
+*.rules.verible_lint text eol=lf
+
+# RTL, testbench and firmware sources
+*.v        text eol=lf
+*.vh       text eol=lf
+*.sv       text eol=lf
+*.s        text eol=lf
+*.S        text eol=lf
+*.c        text eol=lf
+*.h        text eol=lf
+*.ld       text eol=lf
+
+# python / build / docs
+*.py       text eol=lf
+*.toml     text eol=lf
+*.lock     text eol=lf
+*.yaml     text eol=lf
+*.yml      text eol=lf
+*.json     text eol=lf
+*.md       text eol=lf
+*.txt      text eol=lf
+*.cst      text eol=lf
+*.lpf      text eol=lf
+.gitattributes text eol=lf
