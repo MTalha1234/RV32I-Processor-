@@ -226,6 +226,19 @@ make fpga-tangnano9k     # or: make fpga-icesuger
    `pya` imports but `pya.Application` only exists inside the running KLayout
    application.
 
+10. **Verible rule syntax.** Verible 0.0-4302 expects
+    `line-length=length:180`; the repository config (`.rules.verible_lint` and
+    `.vscode/settings.json`) has been updated to that spelling, and the lint
+    run is clean:
+
+    ```bash
+    verible-verilog-lint --rules_config_search \
+      --rules=-always-comb,line-length=length:180 $(cat verible.filelist)
+    ```
+
+    The Verible binaries live in `/opt/verible/bin` (referenced by the VS Code
+    settings, so use the Remote-WSL extension).
+
 ---
 
 ## Reinstall / repair commands

@@ -21,7 +21,7 @@ module wb_slave_data_mem (
     input wb_TGD_I
 );
     localparam integer WORDS = `SIZE_DATA_MEM / 4;
-    reg [31:0] memory[0:WORDS-1];
+    reg [31:0] memory[WORDS];
 
     wire [31:0] word_addr = wb_ADR_I[31:2];
     wire [1:0] byte_off = wb_ADR_I[1:0];

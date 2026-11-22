@@ -147,13 +147,20 @@ make build-gcc          # ROM image first
 make fpga-tangnano9k    # or: make fpga-icesuger
 ```
 
+**Verified results** (Yosys → nextpnr → packer, both P&R runs "finished normally"):
+
+| Board | Output | Timing |
+|---|---|---|
+| ECP5 25k (`fpga/icesuger`) | `soc.bit` (582 KB) + `soc.svf` | 64.24 MHz (PASS @ 25 MHz) |
+| Tang Nano 9K (`fpga/tangnano9k`) | `soc.fs` (2.07 MB) | 24.71 MHz (PASS @ 12 MHz) |
+
+The ROM path in `fpga/*/yosys.ys` is relative (`../../tests/gcc/build/wb_fpga_test.mem`),
+so the flow is portable; `make fpga-*` depends on `rom.mem` and builds it first.
+Flashing still needs the physical board (`make prog` inside the board folder).
+
 **Caveats before running:**
-- `fpga/tangnano9k/yosys.ys` hard-codes `IMEM_HEX_PATH="/home/blockzilla/..."` — edit it
-  to your absolute path.
 - You need the physical board + USB cable to actually program it (`make prog` inside
   the board folder).
-- `.vscode/settings.json` also contains `/home/blockzilla/...` Verible paths — edit
-  for your machine.
 
 ---
 

@@ -13,7 +13,7 @@ module instruction_memory (
 `else
     localparam integer WORDS = `SIZE_INST_MEM / 4;
 `endif
-    reg [31:0] memory[0:WORDS-1];
+    reg [31:0] memory[WORDS];
 
     initial begin
 `ifdef IMEM_LOAD_HEX

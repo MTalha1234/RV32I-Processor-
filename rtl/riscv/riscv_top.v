@@ -55,13 +55,13 @@ module riscv_top (
         .control_word(control_word)
     );
 
-    wire [3:0] alu_op; 
+    wire [3:0] alu_op;
 
-    alu_control alu_ctrl ( 
+    alu_control alu_ctrl (
         .opcode  (instruction[`INST_OPCODE]),
         .alu_ctrl(control_word[`CW_ALU_CTRL]),
         .funct3  (instruction[`INST_FUNCT3]),
-        .funct7  (instruction[`INST_FUNCT7]), 
+        .funct7  (instruction[`INST_FUNCT7]),
         .alu_op  (alu_op)
     );
 
@@ -139,7 +139,7 @@ module riscv_top (
     assign cpu_addr = alu_result;
     assign mem_read_data = cpu_read_data;
 `else
-    assign pc_next_val = branch_taken ? alu_result & ~32'b1 : pc_plus_4;
+    assign pc_next_val = branch_taken ? alu_result & ~32'h0000_0001 : pc_plus_4;
 `endif
 
 endmodule

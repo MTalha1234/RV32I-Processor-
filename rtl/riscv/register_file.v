@@ -10,7 +10,7 @@ module register_file (
     output [31:0] rs1_data,
     output [31:0] rs2_data
 );
-    reg [31:0] registers[0:31];
+    reg [31:0] registers[32];
 
     // initial begin
     //     integer i;

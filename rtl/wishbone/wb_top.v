@@ -56,7 +56,7 @@ module wb_top (
     (* keep_hierarchy = "yes" *)
     wb_slave_data_mem_asic wb_data_mem (
         `else
-    wb_slave_data_mem wb_data_mem ( 
+    wb_slave_data_mem wb_data_mem (
         `endif
         .wb_CLK_I(clk),
         .wb_RST_I(rst),

@@ -72,6 +72,7 @@ module wb_mux (
         slv0_STB_I = 0;
         slv1_DAT_I = 0;
         slv1_STB_I = 0;
+        m_DAT_I = 0;
 
         case (wb_SLV_SEL)
             0: begin
@@ -84,6 +85,10 @@ module wb_mux (
                 m_DAT_I = slv1_DAT_O;
                 slv1_DAT_I = m_DAT_O;
                 slv1_STB_I = m_STB_O;
+            end
+
+            default: begin
+                // no slave selected, m_DAT_I keeps its default value
             end
         endcase
     end

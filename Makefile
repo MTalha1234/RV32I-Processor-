@@ -40,7 +40,7 @@ build-asm:
 	(cd tests/assembly ; bash build.sh)
 .PHONY: build-asm
 
-fpga-%:
+fpga-%: rom.mem
 	cd fpga/$* && $(MAKE) clean && $(MAKE)
 .PHONY: fpga-%
 
